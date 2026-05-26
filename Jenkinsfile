@@ -80,8 +80,8 @@ pipeline {
                     keyFileVariable: 'SSH_KEY'
                 )]) {
                     sh '''
-                      cp $SSH_KEY newdemo.pem
-                      chmod 400 newdemo.pem
+                      cp $SSH_KEY /tmp/newdemo.pem
+                      chmod 400 /tmp/newdemo.pem
                       '''
 
                 }
@@ -98,7 +98,7 @@ pipeline {
         stage('Ansible Deploy') {
             steps {
                 echo 'Deploying with Ansible...'
-                sh 'cd Ansible && ansible-playbook -i inventory.ini playbook.yaml --private-key ../newdemo.pem'
+                sh 'cd Ansible && ansible-playbook -i inventory.ini playbook.yaml --private-key /tmp/newdemo.pem'
             }
         }
 
