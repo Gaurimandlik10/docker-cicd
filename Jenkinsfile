@@ -98,7 +98,7 @@ pipeline {
         stage('Ansible Deploy') {
             steps {
                 echo 'Deploying with Ansible...'
-                sh 'cd ansible && ansible-playbook -i inventory.ini playbook.yml'
+                sh 'cd Ansible && ansible-playbook -i inventory.ini playbook.yml'
             }
         }
 
