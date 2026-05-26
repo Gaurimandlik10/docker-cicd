@@ -98,7 +98,7 @@ pipeline {
         stage('Ansible Deploy') {
             steps {
                 echo 'Deploying with Ansible...'
-                sh 'cd Ansible && ansible-playbook -i inventory.ini playbook.yml --private-key ../newdemo.pem 
+                sh 'cd Ansible && ansible-playbook -i inventory.ini playbook.yml --private-key ../newdemo.pem
             }
         }
 
