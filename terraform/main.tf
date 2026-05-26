@@ -9,11 +9,38 @@ required_providers{
 provider "aws"{
     region = "ap-southeast-2"
 }
+resource "aws_security_group" "web_sg" {
+  name = "jenkins-terraform-sg"
+
+  # Allow SSH
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow HTTP
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow all outbound
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 resource "aws_instance" "dockerdemo"{
      ami = "ami-0a59248a6294cece2"  
-  instance_type = "t3.micro"
-  key_name = "newdemo"
-
+     instance_type = "t3.micro"
+     key_name = "newdemo"
+     vpc_security_group_ids = [aws_security_group.web_sg.id]
   tags ={
     Name = "dockerdemo"
   }
