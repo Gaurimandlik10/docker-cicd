@@ -99,7 +99,7 @@ pipeline {
             steps {
                 echo 'Deploying with Ansible...'
                 sh 'cd Ansible && ansible-playbook -i inventory.ini playbook.yml --private-key ../newdemo.pem \
-                -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"'
+                -e 'ansible_ssh_common_args=\"-o StrictHostKeyChecking=no\"'"
             }
         }
 
