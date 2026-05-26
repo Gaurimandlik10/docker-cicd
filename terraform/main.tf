@@ -9,20 +9,21 @@ required_providers{
 provider "aws"{
     region = ap-southeast-2
 }
-resource "aws_instance" "jenkinsdemo"{
+resource "aws_instance" "dockerdemo"{
      ami = "ami-0a59248a6294cece2"  
   instance_type = "t3.micro"
-  key_name = "demokey1"
+  key_name = "newdemo"
 
   tags ={
-    Name = "jenkinsdemo"
+    Name = "dockerdemo"
   }
 }
 
 resource "local_file" "inventory"{
     content = <<EOF
     [webservers]
-    ${aws_instance.jenkinsdemo.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/ansible-key.pem
+    ${aws_instance.dockerdemo.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/newdemo.pem
+EOF
     filename = "../Ansible/inventory.ini"
 }
 
