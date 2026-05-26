@@ -80,10 +80,10 @@ pipeline {
                     keyFileVariable: 'SSH_KEY'
                 )]) {
                     sh '''
-                        mkdir -p ~/.ssh
-                        cp $SSH_KEY ~/.ssh/newdemo.pem
-                        chmod 400 ~/.ssh/newdemo.pem
-                    '''
+                      cp $SSH_KEY newdemo.pem
+                      chmod 400 newdemo.pem
+                      '''
+
                 }
             }
         }
