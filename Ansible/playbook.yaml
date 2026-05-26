@@ -1,49 +1,66 @@
 ---
-- name: Simple Nginx Project
+- name: Deploy Docker Container
   hosts: webservers
   become: true
 
   vars:
-    packages:
-      - nginx
-      - curl
-    server_type: web
+    ecr_url: "500345929326.dkr.ecr.ap-southeast-2.amazonaws.com"
+    image_name: "devops-project"
+    image_tag: "latest"
 
   tasks:
     - name: Update packages
       apt:
         update_cache: yes
 
-    - name: Install packages
+    - name: Install Docker
       apt:
-        name: "{{ item }}"
+        name: docker.io
         state: present
-      loop: "{{ packages }}"
 
-    - name: Copy webpage
-      copy:
-        src: files/index.html
-        dest: /var/www/html/index.html
-      when: server_type == "web"
-      notify: restart nginx          # ← triggers handler!
-
-    - name: Start Nginx
+    - name: Start Docker
       service:
-        name: nginx
+        name: docker
         state: started
         enabled: yes
 
-    - name: Check Nginx
-      command: systemctl status nginx
-      register: status
+    - name: Install AWS CLI
+      apt:
+        name: awscli
+        state: present
 
-    - name: Print result
+    - name: Login to ECR
+      shell: |
+        aws ecr get-login-password \
+          --region ap-southeast-2 | \
+          docker login \
+          --username AWS \
+          --password-stdin {{ ecr_url }}
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+        AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+
+    - name: Pull Docker image from ECR
+      shell: |
+        docker pull {{ ecr_url }}/{{ image_name }}:{{ image_tag }}
+
+    - name: Stop old container
+      shell: docker stop myapp || true
+
+    - name: Remove old container
+      shell: docker rm myapp || true
+
+    - name: Run new container
+      shell: |
+        docker run -d \
+          --name myapp \
+          -p 80:80 \
+          {{ ecr_url }}/{{ image_name }}:{{ image_tag }}
+
+    - name: Verify container running
+      shell: docker ps
+      register: docker_status
+
+    - name: Print status
       debug:
-        msg: "Website is LIVE!"
-      when: status.rc == 0
-
-  handlers:
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
+        msg: "Container is running! 🎉"
