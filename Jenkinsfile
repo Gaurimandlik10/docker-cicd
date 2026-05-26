@@ -9,6 +9,7 @@ pipeline {
         ECR_REPO              = 'devops-project'
         IMAGE_TAG             = 'latest'
         ECR_URL               = "${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-2.amazonaws.com"
+        EC2_IP = ''
     }
 
     stages {
@@ -64,11 +65,11 @@ pipeline {
         stage('Get EC2 IP') {
             steps {
                 script {
-                    EC2_IP = sh(
+                    env.EC2_IP = sh(
                         script: 'cd terraform && terraform output -raw ec2_public_ip',
                         returnStdout: true
                     ).trim()
-                    echo "EC2 IP: ${EC2_IP}"
+                    echo "EC2 IP: ${env.EC2_IP}"
                 }
             }
         }
@@ -105,8 +106,8 @@ pipeline {
         stage('Verify') {
             steps {
                 script {
-                    sh "curl http://${EC2_IP}"
-                    echo "Website live at: http://${EC2_IP} 🎉"
+                    sh "curl http://${env.EC2_IP}"
+                    echo "Website live at: http://${env.EC2_IP} 🎉"
                 }
             }
         }
