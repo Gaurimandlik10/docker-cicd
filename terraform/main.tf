@@ -22,7 +22,7 @@ resource "aws_instance" "dockerdemo"{
 resource "local_file" "inventory"{
     content = <<EOF
     [webservers]
-    ${aws_instance.dockerdemo.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/newdemo.pem
+    ${aws_instance.dockerdemo.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/newdemo.pem  ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 EOF
     filename = "../Ansible/inventory.ini"
 }
