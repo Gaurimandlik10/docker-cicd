@@ -7,7 +7,7 @@ required_providers{
 }
 }
 provider "aws"{
-    region = ap-southeast-2
+    region = "ap-southeast-2"
 }
 resource "aws_instance" "dockerdemo"{
      ami = "ami-0a59248a6294cece2"  
