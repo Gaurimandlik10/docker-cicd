@@ -76,13 +76,13 @@ pipeline {
         stage('Setup SSH Key') {
             steps {
                 withCredentials([sshUserPrivateKey(
-                    credentialsId: 'ansible-ssh-key',
+                    credentialsId: 'newdemo',
                     keyFileVariable: 'SSH_KEY'
                 )]) {
                     sh '''
                         mkdir -p ~/.ssh
-                        cp $SSH_KEY ~/.ssh/demokey1.pem
-                        chmod 400 ~/.ssh/demokey1.pem
+                        cp $SSH_KEY ~/.ssh/newdemo.pem
+                        chmod 400 ~/.ssh/newdemo.pem
                     '''
                 }
             }
